@@ -1,6 +1,6 @@
 const http = require('http');
 const url = require('url');
-
+const wsServer = require('./websocketServer');
 
 http.createServer(function(req, res){
     var request = url.parse(req.url, true).query
@@ -11,3 +11,5 @@ http.createServer(function(req, res){
     res.write(JSON.stringify(response));
     res.end();
 }).listen(8181);
+
+wsServer();

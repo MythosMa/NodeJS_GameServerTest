@@ -10,5 +10,8 @@
   "license": "ISC",
   "devDependencies": {
     "redis": "^2.8.0"
+  },
+  "dependencies": {
+    "nodejs-websocket": "^1.7.2"
   }
 }
