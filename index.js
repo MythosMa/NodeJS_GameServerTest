@@ -1,6 +1,7 @@
 const http = require('http');
 const url = require('url');
-const wsServer = require('./websocketServer');
+const chatServer = require('./Server/chatServer');
+// const wsServer = require('./websocketServer');
 
 http.createServer(function(req, res){
     var request = url.parse(req.url, true).query
@@ -12,4 +13,6 @@ http.createServer(function(req, res){
     res.end();
 }).listen(8181);
 
-wsServer();
+const chat = chatServer(8182);
+// const chatServer = wsServer(8182);
+// const mapServer = wsServer(8183);

@@ -1,14 +1,17 @@
 const ws = require("nodejs-websocket");
 
-module.exports = createServer = () => {
+module.exports = createServer = (port, callbacks) => {
   let server = ws.createServer(connection => {
     //客户端向服务器发送字符串时的监听函数
     connection.on("text", result => {
       console.log("connection.on -> text", result);
       //在这里，接收到某一个客户端发来的消息，然后统一发送给所有连接到websocket的客户端
-      server.connections.forEach((client) => {
-          client.sendText(result);
-      });
+      if(callbacks.textCallback){
+        callbacks.textCallback(server, result);
+      }
+      // server.connections.forEach((client) => {
+      //     client.sendText(result);
+      // });
     });
     //客户端向服务器发送二进制时的监听函数
     connection.on("binary", result => {
@@ -26,7 +29,7 @@ module.exports = createServer = () => {
     connection.on("error", result => {
       console.log("connection.on -> error", result);
     });
-  }).listen(8182);
+  }).listen(port);
 
   return server;
 };
