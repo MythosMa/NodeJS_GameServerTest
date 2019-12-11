@@ -13,6 +13,6 @@ http.createServer(function(req, res){
     res.end();
 }).listen(8181);
 
-const chat = chatServer(8182);
+const chat = chatServer(8183);
 // const chatServer = wsServer(8182);
 // const mapServer = wsServer(8183);
