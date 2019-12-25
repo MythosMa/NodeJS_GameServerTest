@@ -1,6 +1,7 @@
 const http = require('http');
 const url = require('url');
 const chatServer = require('./Server/chatServer');
+const mapServer = require('./Server/mapServer');
 // const wsServer = require('./websocketServer');
 
 http.createServer(function(req, res){
@@ -14,5 +15,6 @@ http.createServer(function(req, res){
 }).listen(8181);
 
 const chat = chatServer(8183);
+const map = mapServer(8184);
 // const chatServer = wsServer(8182);
 // const mapServer = wsServer(8183);

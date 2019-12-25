@@ -1,7 +1,7 @@
 const wsServer = require('../modules/websocketServer');
 
 const textCallback = (server, result) => {
-    let resJson = JSON.parse(result); 
+    let resJson = result; 
 
     //消息的处理，根据客户端传来的数据结构，拼接成完整的消息字段再返回给客户端
     let channel = '';
@@ -33,6 +33,10 @@ const connectCallback = (server, result) => {
     
 }
 
+const closeConnectCallback = (server, result) => {
+    
+}
+
 module.exports = ChatServer = (port) => {
     let callbacks = {
         textCallback: (server, result) => {
@@ -40,6 +44,9 @@ module.exports = ChatServer = (port) => {
         },
         connectCallback: (server, result) => {
             connectCallback(server, result);
+        },
+        closeConnectCallback: (server, result) => {
+            closeConnectCallback(server, result);
         },
     };
 
