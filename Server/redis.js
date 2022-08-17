@@ -9,7 +9,7 @@ client.on('error', (error) => {
     console.log('redis error error : ' + error);
 });
 
-client.on('connect'. (error) => {
+client.on('connect', (error) => {
     console.log('redis connect error : ' + error);
 });
 

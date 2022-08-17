@@ -1,6 +1,6 @@
 class PlayerObject {
   //构造函数中的相关初始化，玩家角色状态
-  constructor() {
+  constructor(playerIndex) {
     this.dt = 1 / 60; //因为游戏的设计帧率是60帧，所以服务器在计算数据的时候，也选择60帧(即每秒进行60次计算)
     this.update = null; //循环计时器
 
@@ -8,13 +8,13 @@ class PlayerObject {
     this.State = {
       STATE_STAND: 1,
       STATE_WALK_LEFT: 2,
-      STATE_WALK_RIGHT: 3
+      STATE_WALK_RIGHT: 3,
     };
 
     //玩家角色数据集，初始化随机的id和随机的名字
     this.playerData = {
       playerId: this.makeUUID(),
-      playerName: "player" + Math.ceil(Math.random() * 100),
+      playerName: `Player_${playerIndex}`,
       playerAttribute: {
         //角色数据
         logout: false, //是否退出地图的标示符
@@ -23,14 +23,14 @@ class PlayerObject {
         position: {
           //角色在地图中的坐标
           x: -500,
-          y: -460
+          y: -460,
         },
         scale: {
           //角色动画的缩放参数，角色的面向是通过缩放参数来控制的
           x: 3,
-          y: 3
-        }
-      }
+          y: 3,
+        },
+      },
     };
     this.connection = null; //角色的websocket连接对象
   }
@@ -45,11 +45,14 @@ class PlayerObject {
   }
 
   makeUUID() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      }
+    );
   }
 
   //接收玩家的操作，目前只有操控移动，所以这里是根据操作改变角色状态
@@ -83,13 +86,13 @@ class PlayerObject {
         let map = this.connection.map;
         let mapData = map.getMapInfo();
         let data = {
-            /**
-             * 数据格式暂定
-             * dataType 数据操作指令
-             * data 数据
-             */
+          /**
+           * 数据格式暂定
+           * dataType 数据操作指令
+           * data 数据
+           */
           dataType: "GAME_PLAYER_DATA",
-          data: mapData
+          data: mapData,
         };
         this.connection.sendText(JSON.stringify(data));
       }

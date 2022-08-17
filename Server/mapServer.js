@@ -1,8 +1,10 @@
-const wsServer = require("../modules/websocketServer");//引入websocketServer
-const mapObject = require("./MapServerModules/mapObject");//引入地图类
-const playerObject = require("../modules/playerObject");//引入角色类
+const wsServer = require("../modules/websocketServer"); //引入websocketServer
+const mapObject = require("./MapServerModules/mapObject"); //引入地图类
+const playerObject = require("../modules/playerObject"); //引入角色类
 
-const map_1 = new mapObject("map_1");//初始化地图信息
+const map_1 = new mapObject("map_1"); //初始化地图信息
+
+let playerConnectCount = 0; //当前连接过该地图的玩家数量，暂时用来给玩家起名
 
 //同聊天服务器一样，几个回调函数来处理连接的监听
 const textCallback = (server, result, connection) => {
@@ -17,8 +19,8 @@ const textCallback = (server, result, connection) => {
    * PLAYER_OPERATION 客户端发起操作，控制角色，改变角色状态
    */
   switch (dataType) {
-    case "PLAYER_SERVER_INIT"://服务器角色初始化，并添加连接对象
-      player = new playerObject();
+    case "PLAYER_SERVER_INIT": //服务器角色初始化，并添加连接对象
+      player = new playerObject(playerConnectCount++);
       player.addConnection(connection);
       connection["player"] = player;
       connection["map"] = map_1;
@@ -26,12 +28,12 @@ const textCallback = (server, result, connection) => {
         makeResponseData("PLAYER_SERVER_INIT_OVER", player.getPlayerData())
       );
       break;
-    case "PLAYER_CLIENT_INIT_OVER"://客户端角色创建完成，开启角色数据计算，并将角色信息添加到地图信息中心
+    case "PLAYER_CLIENT_INIT_OVER": //客户端角色创建完成，开启角色数据计算，并将角色信息添加到地图信息中心
       player = connection.player;
       player.start();
       map_1.addPlayer(player);
       break;
-    case "PLAYER_OPERATION"://客户端发来的操作，改变角色状态
+    case "PLAYER_OPERATION": //客户端发来的操作，改变角色状态
       player = connection.player;
       player.operation(result.data);
       break;
@@ -53,11 +55,11 @@ const closeConnectCallback = (server, result, connection) => {
 const makeResponseData = (dataType, data) => {
   return JSON.stringify({
     dataType,
-    data
+    data,
   });
 };
 
-module.exports = MapServer = port => {
+module.exports = MapServer = (port) => {
   let callbacks = {
     textCallback: (server, result, connection) => {
       textCallback(server, result, connection);
@@ -67,7 +69,7 @@ module.exports = MapServer = port => {
     },
     closeConnectCallback: (server, result, connection) => {
       closeConnectCallback(server, result, connection);
-    }
+    },
   };
 
   const mapServer = wsServer(port, callbacks);
